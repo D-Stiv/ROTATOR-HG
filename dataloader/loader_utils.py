@@ -41,8 +41,8 @@ def build_loaders(train_dataset, val_dataset, test_dataset, args):
 
 
 def get_model_data_split(args):
-    dst_dir = "Insert: directory to cache datasets"
-    data_splits_dir = "Insert: directory where split dataframes are stored"
+    dst_dir = getattr(args, "dataset_cache_dir", "data/cache")
+    data_splits_dir = getattr(args, "data_splits_dir", "data/splits")
 
     os.makedirs(dst_dir, exist_ok=True)
     datasets = {}
@@ -53,7 +53,7 @@ def get_model_data_split(args):
         print(f"Loaded {split} dataset with {len(df)} samples.")
 
         print(f"Preparing {args.model_name} {split} dataset...")
-        dataset = build_dataset_for_model(df)
+        dataset = build_dataset_for_model(df, args)
 
         dataset_path = os.path.join(dst_dir, f"{split}.pkl")
 
@@ -151,14 +151,27 @@ def get_modes_ohe(modes, num_modes, node=False):
     return node_modes_vec
 
 
-def get_node_indices(node_id_to_idx, nodes_seq):
-    node_indices = "Get indices from node_id_to_idx for nodes_seq"
-    return node_indices
+def _lookup_index(mapping, *keys):
+    for key in keys:
+        if key in mapping:
+            return mapping[key]
+        str_key = str(key)
+        if str_key in mapping:
+            return mapping[str_key]
+    raise KeyError(f"Could not find any of these keys in index mapping: {keys}")
 
-def get_edge_indices(edge_id_to_idx, edges_seq):
-    edge_indices = "Get indices from edge_id_to_idx for edges_seq"
-    return edge_indices
+
+def get_node_indices(node_id_to_idx, nodes_seq):
+    return [_lookup_index(node_id_to_idx, node_id) for node_id in nodes_seq]
+
+def get_edge_indices(edge_id_to_idx, edges_seq, edge_modes_seq=None):
+    if edge_modes_seq is None:
+        return [_lookup_index(edge_id_to_idx, edge_id) for edge_id in edges_seq]
+
+    return [
+        _lookup_index(edge_id_to_idx, (edge_id, mode), f"{edge_id}_{mode}", edge_id)
+        for edge_id, mode in zip(edges_seq, edge_modes_seq)
+    ]
 
 def get_cell_indices(cell_id_to_idx, cells_seq):
-    cell_indices = "Get indices from cell_id_to_idx for cells_seq"
-    return cell_indices
+    return [_lookup_index(cell_id_to_idx, cell_id) for cell_id in cells_seq]

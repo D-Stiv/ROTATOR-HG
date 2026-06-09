@@ -1,6 +1,7 @@
 import torch
 from tqdm import tqdm
 import os
+import pickle
 
 from pretraining.utils import set_seed, evaluate_embeddings, _is_valid_number, _safe_mean
 from pretraining.config import Configuration, setup_config
@@ -89,11 +90,14 @@ def main(args, train_loader, val_loader, test_loader):
     print(f"Model initialized with {num_parameters:,} trainable parameters.")
     
     
-    checkpoint_dir = "Insert: checkpoint directory for the pretrained model"
+    checkpoint_dir = args.checkpoint_dir
 
     os.makedirs(checkpoint_dir, exist_ok=True)
     epochs = args.max_epochs
-    best_model_path = "Insert: path to save the best model"
+    best_model_path = args.best_model_path or os.path.join(checkpoint_dir, "best_model.pt")
+    args_path = os.path.join(checkpoint_dir, "args.pkl")
+    with open(args_path, "wb") as f:
+        pickle.dump(args, f)
 
     
     # Training

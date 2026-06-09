@@ -16,7 +16,7 @@ from pretraining.models import InterRoute2Vec
 def build_model(args):
     device = args.device
 
-    args_path = "Insert: path to the saved args during pretraining (should be in the same directory as the checkpoint)"
+    args_path = args.pretrained_args_path
 
     with open(args_path, "rb") as f:
         saved_args = pickle.load(f)
@@ -24,8 +24,7 @@ def build_model(args):
 
     model = InterRoute2Vec(args=saved_args)
 
-    checkpoint_path = "Insert: path to the saved checkpoint for the pretrian model (should be in the same directory as the saved args)"
-
+    checkpoint_path = args.checkpoint_path
 
     state = torch.load(checkpoint_path, map_location=device)
 

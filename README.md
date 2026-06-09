@@ -66,9 +66,9 @@ The ROTATOR+HG workflow follows this order:
 2. Generate route instances and split them into training, validation, and test sets.
 3. Pretrain spatial-structural graph embeddings: node2vec for grid or cell embeddings, and directed multigraph GNN embeddings for graph nodes and edges.
 4. Prepare node and edge feature tables, including structural, scalar, categorical, and textual features.
-5. Configure the data and artifact paths marked by `Insert: ...` placeholders in the source code.
-6. Run ROTATOR+HG pretraining to learn context-aware route embeddings.
-7. Evaluate the learned embeddings with unsupervised, semi-supervised, or supervised fine-tuning protocols.
+<!-- 5. Configure the data and artifact paths marked by `Insert: ...` placeholders in the source code. -->
+5. Run ROTATOR+HG pretraining to learn context-aware route embeddings.
+6. Evaluate the learned embeddings with unsupervised, semi-supervised, or supervised fine-tuning protocols.
 
 ## Pretraining
 

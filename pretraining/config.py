@@ -60,6 +60,18 @@ def setup_config(config):
     config._parser.add_argument("--debug", action="store_true", help="Whether to enable debug mode")
     config._parser.add_argument("--recompute_loader", action="store_true", help="Whether to recompute data loaders")
     config._parser.add_argument('--num_samples_debug', type=int, default=10, help='Number of samples to use in debug mode', nargs='*')
+    config._parser.add_argument("--max_route_length", type=int, default=128, help="Maximum number of route steps kept per sample", nargs='*')
+    config._parser.add_argument("--num_modes", type=int, default=6, help="Number of transport modes encoded in mode vectors", nargs='*')
+
+    config._parser.add_argument("--data_splits_dir", type=str, default="data/splits", help="Directory containing train.pkl, val.pkl, and test.pkl")
+    config._parser.add_argument("--dataset_cache_dir", type=str, default="data/cache", help="Directory used to cache built dataset objects")
+    config._parser.add_argument("--graph_embeddings_path", type=str, default="data/embeddings/graph_embeddings.pkl", help="Pickle with graph node and edge embeddings")
+    config._parser.add_argument("--cell_embeddings_path", type=str, default="data/embeddings/cell_embeddings.pkl", help="Pickle with grid or cell embeddings")
+    config._parser.add_argument("--node2cell_path", type=str, default="data/embeddings/node2cell.pkl", help="Pickle with node-to-cell mapping")
+    config._parser.add_argument("--edge_features_path", type=str, default="data/features/edge_features.pkl", help="Pickle with edge feature table")
+    config._parser.add_argument("--node_features_path", type=str, default="data/features/node_features.pkl", help="Pickle with node feature table")
+    config._parser.add_argument("--checkpoint_dir", type=str, default="checkpoints/pretraining", help="Directory for pretraining checkpoints and arguments")
+    config._parser.add_argument("--best_model_path", type=str, default=None, help="Optional explicit path for the best pretrained model checkpoint")
 
     config._parser.add_argument("--view1_strategies", type=str, default="['tc', 'cm']", help="List of strategies for view 1, e.g., ['tc', 'cm']", nargs='*')   # rm: random, tc: truncate, cm: consecutive
     config._parser.add_argument("--view2_strategies", type=str, default="['rm', 'tc', 'cm']", help="List of strategies for view 2, e.g., ['rm', 'tc', 'cm']", nargs='*')   # rm: random, tc: truncate, cm: consecutive

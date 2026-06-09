@@ -1,6 +1,6 @@
 import torch
 import torch.nn as nn
-from torch_scatter import scatter_mean, scatter_max, scatter_sum
+from torch_scatter import scatter_sum
 from torch.nn.utils.rnn import pack_padded_sequence, pad_packed_sequence
 
 from pretraining.utils import MaskingStrategy, global_similarity_kl_loss, route_contrastive_loss, node_sequence_loss, edge_sequence_loss, pos_neg_neighborhood_contrastive_loss, transport_consistency_loss, route_order_contrastive_loss, soft_clustering_loss
@@ -534,7 +534,7 @@ class InterRoute2Vec(nn.Module):
 
         if self.eval_ or eval_mode:
             with torch.no_grad():
-                route_embedding, _, _, _, _ = self.get_route_embedding(
+                route_embedding, _, _, _ = self.get_route_embedding(
                     node_sequence_emb,
                     cell_sequence_emb,
                     edge_sequence_emb,

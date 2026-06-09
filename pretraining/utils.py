@@ -8,6 +8,30 @@ from scipy.stats import spearmanr
 from sklearn.manifold import trustworthiness
 
 
+def cosine_similarity_matrix(x: torch.Tensor) -> torch.Tensor:
+    x = F.normalize(x.float(), p=2, dim=-1)
+    return x @ x.T
+
+
+def topk_mask(similarity: torch.Tensor, k: int) -> torch.Tensor:
+    n = similarity.size(0)
+    if n == 0:
+        return torch.zeros_like(similarity)
+
+    k = max(0, min(int(k), n - 1))
+    mask = torch.zeros_like(similarity)
+    if k == 0:
+        return mask
+
+    scores = similarity.masked_fill(
+        torch.eye(n, dtype=torch.bool, device=similarity.device),
+        -1e9,
+    )
+    idx = torch.topk(scores, k=k, dim=1).indices
+    mask.scatter_(1, idx, 1.0)
+    return mask
+
+
 def set_seed(seed):
     np.random.seed(seed)
     torch.manual_seed(seed)
@@ -103,7 +127,6 @@ def route_contrastive_loss(z1, z2, temperature=0.1):
     )
     
 
-from utils import cosine_similarity_matrix, topk_mask
 def neighborhood_contrastive_loss(route_emb, target_features, k=5, temperature=0.1):
     """
     route_emb: [B, D]
@@ -149,11 +172,13 @@ def pos_neg_neighborhood_contrastive_loss(
     """
 
     # chek positive and negative k base on batch size
-    pos_k = pos_k if pos_k < route_emb.size(0)/8 else round(route_emb.size(0)/8) - 1
-    neg_k = neg_k if neg_k < route_emb.size(0)/2 else round(route_emb.size(0)/2) - 1
-
     B = route_emb.size(0)
     device = route_emb.device
+    if B < 2:
+        return route_emb.sum() * 0.0
+
+    pos_k = max(1, min(int(pos_k), B - 1))
+    neg_k = max(1, min(int(neg_k), B - 1))
 
     S_target = cosine_similarity_matrix(target_features)
     S_emb = cosine_similarity_matrix(route_emb)
@@ -510,16 +535,12 @@ def evaluate_embeddings(Z, X_struct=None, y=None, K=None):
 def _safe_float(x, default=None):
     return float(x) if _is_valid_number(x) else default
 
-def _is_valid_number(x):
-    if x is None:
-        return False
-    try:
-        x = float(x)
-    except Exception:
-        return False
-    return not (math.isnan(x) or math.isinf(x))
 
-
+def _safe_mean(values, default=None):
+    valid = [float(v) for v in values if _is_valid_number(v)]
+    if len(valid) == 0:
+        return default
+    return sum(valid) / len(valid)
 
 def _is_valid_number(x):
     if x is None:
@@ -529,7 +550,4 @@ def _is_valid_number(x):
     except Exception:
         return False
     return not (math.isnan(x) or math.isinf(x))
-
-
-
 

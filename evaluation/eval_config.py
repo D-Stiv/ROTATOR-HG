@@ -52,6 +52,20 @@ def setup_config(config):
     config._parser.add_argument("--seed", type=int, default=42, help="Random seed for reproducibility", nargs='*')
     config._parser.add_argument("--batch_size", type=int, default=128, help="Batch size for evaluation", nargs='*')
     config._parser.add_argument("--debug", action="store_true")
+    config._parser.add_argument("--max_route_length", type=int, default=128, help="Maximum number of route steps kept per sample", nargs='*')
+    config._parser.add_argument("--num_modes", type=int, default=6, help="Number of transport modes encoded in mode vectors", nargs='*')
+
+    config._parser.add_argument("--data_splits_dir", type=str, default="data/splits", help="Directory containing train.pkl, val.pkl, and test.pkl")
+    config._parser.add_argument("--dataset_cache_dir", type=str, default="data/cache", help="Directory used to cache built dataset objects")
+    config._parser.add_argument("--graph_embeddings_path", type=str, default="data/embeddings/graph_embeddings.pkl", help="Pickle with graph node and edge embeddings")
+    config._parser.add_argument("--cell_embeddings_path", type=str, default="data/embeddings/cell_embeddings.pkl", help="Pickle with grid or cell embeddings")
+    config._parser.add_argument("--node2cell_path", type=str, default="data/embeddings/node2cell.pkl", help="Pickle with node-to-cell mapping")
+    config._parser.add_argument("--edge_features_path", type=str, default="data/features/edge_features.pkl", help="Pickle with edge feature table")
+    config._parser.add_argument("--node_features_path", type=str, default="data/features/node_features.pkl", help="Pickle with node feature table")
+    config._parser.add_argument("--pretrained_args_path", type=str, default="checkpoints/pretraining/args.pkl", help="Path to saved pretraining arguments")
+    config._parser.add_argument("--checkpoint_path", type=str, default="checkpoints/pretraining/best_model.pt", help="Path to pretrained ROTATOR+HG checkpoint")
+    config._parser.add_argument("--finetune_ckpt_dir", type=str, default="checkpoints/finetuning", help="Directory for fine-tuning checkpoints")
+    config._parser.add_argument("--finetune_ckpt_path", type=str, default=None, help="Optional explicit path for fine-tuning checkpoint")
 
     # finetune arguments for supervised evaluation
     config._parser.add_argument("--finetune_epochs", type=int, default=50, help="Epoch count for supervised fine-tuning when a cached head is not reused", nargs='*')

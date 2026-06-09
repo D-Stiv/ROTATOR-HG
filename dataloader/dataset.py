@@ -75,7 +75,7 @@ class RouteDatasetBase(Dataset):
     # =========================================================
 
     def _load_embeddings(self):        
-        emb_file = "Insert: directory where graph embeddings are stored (node and edges)" 
+        emb_file = self.config.graph_embeddings_path
 
         with open(emb_file, "rb") as f:
             emb = pickle.load(f)
@@ -88,12 +88,12 @@ class RouteDatasetBase(Dataset):
         self.hidden_size = self.node_embeddings.shape[1]
 
         
-        cell_file = "Insert: directory where cell embeddings are stored"
+        cell_file = self.config.cell_embeddings_path
         with open(cell_file, "rb") as f:
             d = pickle.load(f)
         self.cell_embeddings = torch.tensor(d["embeddings"], dtype=torch.float32)
 
-        node2cell_file = "Insert: directory where node2cell mapping is stored"
+        node2cell_file = self.config.node2cell_path
         with open(node2cell_file, "rb") as f:
             d = pickle.load(f)
         self.node2cell = d["int_mapping"]
@@ -103,7 +103,7 @@ class RouteDatasetBase(Dataset):
     # =========================================================
 
     def _load_features(self):
-        edge_path = "Insert: path to edge features file."
+        edge_path = self.config.edge_features_path
         with open(edge_path, "rb") as f:
             edge_data = pickle.load(f)
 
@@ -128,7 +128,7 @@ class RouteDatasetBase(Dataset):
             np.stack(edge_data["textual_features"].values)
         ).float()
 
-        node_path = "Insert: path to node features file."
+        node_path = self.config.node_features_path
         with open(node_path, "rb") as f:
             node_data = pickle.load(f)
 
