@@ -32,11 +32,43 @@ We generate synthetic routes over the intermodal graph $\mathcal{G}$ from the Wa
 
 The dataset will be made available upon paper publication.
 
+## Data and Artifacts
+
+The current code expects several external data and artifact paths to be configured before running pretraining or evaluation. These paths are marked in the source code with `Insert: ...` placeholders.
+
+Expected inputs for dataset construction:
+
+- Route split files: `train.pkl`, `val.pkl`, and `test.pkl`, loaded from the split-data directory configured in `dataloader/loader_utils.py`.
+- Node and edge graph embeddings: a pickle file containing `node_id_to_idx`, `edge_id_to_idx`, `node_embeddings`, and `edge_embeddings`, configured in `dataloader/dataset.py`.
+- Cell embeddings: a pickle file containing grid or cell embeddings, configured in `dataloader/dataset.py`.
+- Node-to-cell mapping: a pickle file containing the node-to-cell integer mapping, configured in `dataloader/dataset.py`.
+- Edge feature table: a pickle file with structural, scalar, categorical, and textual edge features, configured in `dataloader/dataset.py`.
+- Node feature table: a pickle file with structural, scalar, categorical, and textual node features, configured in `dataloader/dataset.py`.
+
+Expected outputs and reusable artifacts:
+
+- Cached dataset objects are written to the dataset-cache directory configured in `dataloader/loader_utils.py`.
+- Pretraining checkpoints and the best ROTATOR+HG model path are configured in `pretraining/main.py`.
+- Evaluation loads the pretrained model arguments and checkpoint from the paths configured in `evaluation/eval_utils.py`.
+- Supervised fine-tuning checkpoints are configured in `evaluation/eval_main.py` and `evaluation/finetune.py`.
+
 ## Spatial-Structural Embedding
 
 Before context-aware learning, ROTATOR+HG uses spatial-structural embeddings to represent graph elements in the intermodal network.
 
 Grid or cell embeddings are pretrained with node2vec, following Grover and Leskovec (2016). Node and edge embeddings are pretrained with a directed multigraph neural network, following Egressy et al. (2024). These embeddings are then consumed by the ROTATOR+HG pretraining pipeline as route-level input features.
+
+## Pipeline
+
+The ROTATOR+HG workflow follows this order:
+
+1. Build or obtain the intermodal graph for the Wangerland region.
+2. Generate route instances and split them into training, validation, and test sets.
+3. Pretrain spatial-structural graph embeddings: node2vec for grid or cell embeddings, and directed multigraph GNN embeddings for graph nodes and edges.
+4. Prepare node and edge feature tables, including structural, scalar, categorical, and textual features.
+5. Configure the data and artifact paths marked by `Insert: ...` placeholders in the source code.
+6. Run ROTATOR+HG pretraining to learn context-aware route embeddings.
+7. Evaluate the learned embeddings with unsupervised, semi-supervised, or supervised fine-tuning protocols.
 
 ## Pretraining
 
