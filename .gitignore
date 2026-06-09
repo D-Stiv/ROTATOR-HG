@@ -1,0 +1,88 @@
+# Python bytecode and caches
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.pyre/
+.coverage
+.coverage.*
+htmlcov/
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# Packaging and build outputs
+build/
+dist/
+*.egg-info/
+.eggs/
+pip-wheel-metadata/
+
+# Jupyter and editor state
+.ipynb_checkpoints/
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Environment and local configuration
+.env
+.env.*
+!.env.example
+*.local
+
+# Logs
+*.log
+logs/
+runs/
+wandb/
+mlruns/
+
+# Data, generated datasets, and serialized artifacts
+data/
+datasets/
+cache/
+artifacts/
+outputs/
+results/
+checkpoints/
+models/
+embeddings/
+*.pkl
+*.pickle
+*.joblib
+
+# Model checkpoints and tensor dumps
+*.pt
+*.pth
+*.ckpt
+*.onnx
+*.npy
+*.npz
+
+# Large tabular/geospatial exports commonly used by experiments
+*.csv
+*.tsv
+*.parquet
+*.feather
+*.h5
+*.hdf5
+*.sqlite
+*.sqlite3
+*.gpkg
+*.shp
+*.shx
+*.dbf
+*.prj
+*.cpg
